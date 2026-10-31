@@ -1,0 +1,51 @@
+
+from collections import deque
+
+# Hospital layout represented as an adjacency list
+graph = {
+    'Entrance': ['A', 'B'],
+    'A': ['Entrance', 'C', 'D'],
+    'B': ['Entrance', 'E'],
+    'C': ['A', 'ICU'],
+    'D': ['A', 'E'],
+    'E': ['B', 'D', 'ICU'],
+    'ICU': ['C', 'E']
+}
+
+def bfs(graph, start, goal):
+    queue = deque([(start, [start])])
+    visited = {start}
+    explored = []
+
+    while queue:
+        node, path = queue.popleft()
+        explored.append(node)
+
+        if node == goal:
+            return path, explored
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append((neighbor, path + [neighbor]))
+
+    return None, explored
+
+
+start = input("Enter source node: ")
+goal = input("Enter destination node: ")
+
+if start not in graph or goal not in graph:
+    print("Invalid source or destination!")
+else:
+    path, explored = bfs(graph, start, goal)
+
+    print("BFS traversal:", explored)
+
+    if path:
+        print("Shortest route:", " -> ".join(path))
+        print("Corridors traversed:", len(path) - 1)
+    else:
+        print("No route found.")
+
+    print("Nodes explored:", len(explored))
